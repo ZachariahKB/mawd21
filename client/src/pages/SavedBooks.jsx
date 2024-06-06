@@ -28,9 +28,9 @@ const SavedBooks = () => {
 
         const response = await getMe(token);
 
-        if (!response.ok) {
+        /*if (!response.ok) {
           throw new Error('something went wrong!');
-        }
+        }*/
 
         const user = await response.json();
         setUserData(user);

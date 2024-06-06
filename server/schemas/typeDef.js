@@ -22,6 +22,7 @@ type Book{
 }
 type Mutation{
     addUser(username:String!, email:String!, password:String!): Auth
+    loginUser(email:String!, password:String!): Auth
 }
 type Query {
     user: User

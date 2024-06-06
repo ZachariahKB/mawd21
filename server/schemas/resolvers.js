@@ -1,9 +1,9 @@
-const { AuthenticationError, signToken } = require('apollo-server-express');
+const { AuthenticationError, signToken } = require('../utils/auth.js');
 const{User} = require("../models")
 
 const resolvers = {
   Query: {
-    user: async (_, __, { user }) => {
+    user: async (_,__ ,{ user }) => {
       if (!user) {
         throw new AuthenticationError('You must be logged in');
       }
@@ -12,11 +12,24 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (args) =>{
+    addUser: async (parent, args) =>{
       const user=await User.create(args)
       const token= signToken(user)
       return{token, user}
+    },
+    loginUser: async (parent, args)=>{
+      const user= await User.findOne ({email:args.email})
+      if (!user){
+        throw AuthenticationError
+      }
+      const passwordCheck= await user.isCorrectPassword(args.password)
+      if(!passwordCheck){
+        throw AuthenticationError
+      }
+      const token= signToken(user)
+      return{token, user}
     }
+    
   },
 };
 
